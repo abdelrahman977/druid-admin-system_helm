@@ -1,0 +1,25 @@
+image: abdelrahman97/druid-admin-system:1.0.2
+name: druid-admin-system
+env:
+  secret:
+    name: druid-admin-system-secret
+    secretCode: "d2luZG93LlJFQUNUX0FQUF9EUlVJRF9BRE1JTl9VU0VSTkFNRT0nYWRtaW4nCndpbmRvdy5SRUFDVF9BUFBfRFJVSURfQURNSU5fUEFTU1dPUkQ9J3F3ZWFzZCcK"
+  configmap:
+    name: druid-admin-system-config
+    api: 'window.REACT_APP_DRUID_IP="http://localhost:8083"'
+deployment:
+  volumes:
+    publicVolName: druid-admin-system-config-volume
+    secretVolName: druid-admin-system-secret-volume
+    defaultMode: 420
+  volumeMounts:
+    publicMountPath: /usr/share/nginx/html/config-public.js
+    publicSubPath: config-public.js
+    secretMountPath: /usr/share/nginx/html/config-secret.js
+    secretSubPath: config-secret.js
+    readOnly: true
+service:
+  port: 80
+  protocol: TCP
+  targetPort: 80
+  type: LoadBalancer

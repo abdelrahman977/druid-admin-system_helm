@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: {{ .Values.name }}
+  name: {{ .Values.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: {{ .Values.name }}
+    spec:
+      volumes:
+      - name: {{ .Values.deployment.volumes.publicVolName }}
+        configMap:
+          name: {{ .Values.env.configmap.name }}
+          defaultMode: {{ .Values.deployment.volumes.defaultMode }}
+      - name: {{ .Values.deployment.volumes.secretVolName }}
+        secret:
+          secretName: {{ .Values.env.secret.name }}
+          defaultMode: {{ .Values.deployment.volumes.defaultMode }}
+      containers:
+      - image: {{ .Values.image }}
+        name: {{ .Values.name }}
+        resources: {}
+        volumeMounts:
+        - mountPath: {{ .Values.deployment.volumeMounts.publicMountPath }}
+          name: {{ .Values.deployment.volumes.publicVolName }}
+          readOnly: {{ .Values.deployment.volumeMounts.readOnly }}
+          subPath: {{ .Values.deployment.volumeMounts.publicSubPath }}
+        - mountPath: {{ .Values.deployment.volumeMounts.secretMountPath }}
+          name: {{ .Values.deployment.volumes.secretVolName }}
+          readOnly: {{ .Values.deployment.volumeMounts.readOnly }}
+          subPath: {{ .Values.deployment.volumeMounts.secretSubPath }}
+status: {}
